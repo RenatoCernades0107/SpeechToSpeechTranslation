@@ -4,11 +4,12 @@ import azure.cognitiveservices.speech as speechsdk
 import time
 import pandas as pd
 
+
 def record_time(function):
     def wrap(*args, **kwargs):
         start_time = time.time()
-        function_return = function(*args, **kwargs)
-        print(f"Run time {round(time.time() - start_time, 2)} seconds")
+        function_return = function(*args, 62**kwargs)
+        print(f"Run time of {function.__name__} {round(time.time() - start_time, 2)} seconds")
         return function_return
     return wrap
 
@@ -30,9 +31,10 @@ class Translate():
 
     @record_time
     def speech_to_speech_translation(self):
-        print("Speak into your microphone.")
+        start_time = time.time()
         translation_recognition_result = self.translation_recognizer.recognize_once_async().get()
-
+        print(f"Run time of translation {round(time.time() - start_time, 2)} seconds")
+        
         if translation_recognition_result.reason == speechsdk.ResultReason.TranslatedSpeech:
             print("Recognized: {}".format(translation_recognition_result.text))
             print("""Translated into '{}': {}""".format(
@@ -129,6 +131,7 @@ def main():
 
     translate = Translate(target_language=lang_map[lang_list[to_lang]]['target'],recognition_language=rec_lang_map[rec_lang_list[from_lang]], voice=lang_map[lang_list[to_lang]]['voice'])
 
+    print("Speak into your microphone.")
     translate.speech_to_speech_translation()
 
     
